@@ -20,6 +20,7 @@ namespace tournament_manager.Controllers
         [HttpPost]
         public async Task <IActionResult> CreateTournament([FromBody] CreateTournamentDTO tournamentDto)
         {
+            Console.WriteLine("test2");
             var authorizationHeader = Request.Headers["Authorization"].ToString();
             if (string.IsNullOrEmpty(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
             {
@@ -34,7 +35,7 @@ namespace tournament_manager.Controllers
                 return Unauthorized("Invalid token");
             }
 
-            await _tournamentService.createTournament(tournamentDto);
+            await _tournamentService.createTournament(tournamentDto,userId);
             return Ok("Tournament created");
         }
     }

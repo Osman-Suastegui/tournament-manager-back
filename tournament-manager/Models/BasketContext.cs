@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace tournament_manager.Models;
 
-public partial class ApplicationDbContext : DbContext
+public partial class BasketContext : DbContext
 {
-    public ApplicationDbContext()
+    public BasketContext()
     {
     }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+    public BasketContext(DbContextOptions<BasketContext> options)
         : base(options)
     {
     }
@@ -19,9 +19,9 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<MatchesPlayer> MatchesPlayers { get; set; }
 
-    public virtual DbSet<Player> Players { get; set; }
-
     public virtual DbSet<Notification> Notifications { get; set; }
+
+    public virtual DbSet<Player> Players { get; set; }
 
     public virtual DbSet<PlayersTournament> PlayersTournaments { get; set; }
 
@@ -32,8 +32,6 @@ public partial class ApplicationDbContext : DbContext
     public virtual DbSet<TeamTournamentLink> TeamTournamentLinks { get; set; }
 
     public virtual DbSet<TeamsTournament> TeamsTournaments { get; set; }
-
-    public virtual DbSet<TestEntity> TestEntities { get; set; }
 
     public virtual DbSet<Tournament> Tournaments { get; set; }
 
@@ -47,43 +45,6 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Notification>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("notifications_pkey");
-
-            entity.ToTable("notifications");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.ActionUrl).HasColumnName("action_url");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("created_at");
-            entity.Property(e => e.IsRead)
-                .HasDefaultValue(false)
-                .HasColumnName("is_read");
-            entity.Property(e => e.Message).HasColumnName("message");
-            entity.Property(e => e.ReceiverId).HasColumnName("receiver_id");
-            entity.Property(e => e.SenderId).HasColumnName("sender_id");
-            entity.Property(e => e.Status)
-                .HasMaxLength(20)
-                .HasDefaultValueSql("NULL::character varying")
-                .HasColumnName("status");
-            entity.Property(e => e.Type)
-                .HasMaxLength(50)
-                .HasColumnName("type");
-
-            entity.HasOne(d => d.Receiver).WithMany(p => p.NotificationReceivers)
-                .HasForeignKey(d => d.ReceiverId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_receiver");
-
-            entity.HasOne(d => d.Sender).WithMany(p => p.NotificationSenders)
-                .HasForeignKey(d => d.SenderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("fk_sender");
-        });
-
         modelBuilder.Entity<Match>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("matches_pkey");
@@ -162,6 +123,43 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Team).WithMany(p => p.MatchesPlayers)
                 .HasForeignKey(d => d.TeamId)
                 .HasConstraintName("fk78fi67rgdwv05w21k1mov5ai1");
+        });
+
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("notifications_pkey");
+
+            entity.ToTable("notifications");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.ActionUrl).HasColumnName("action_url");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("created_at");
+            entity.Property(e => e.IsRead)
+                .HasDefaultValue(false)
+                .HasColumnName("is_read");
+            entity.Property(e => e.Message).HasColumnName("message");
+            entity.Property(e => e.ReceiverId).HasColumnName("receiver_id");
+            entity.Property(e => e.SenderId).HasColumnName("sender_id");
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .HasDefaultValueSql("NULL::character varying")
+                .HasColumnName("status");
+            entity.Property(e => e.Type)
+                .HasMaxLength(50)
+                .HasColumnName("type");
+
+            entity.HasOne(d => d.Receiver).WithMany(p => p.NotificationReceivers)
+                .HasForeignKey(d => d.ReceiverId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_receiver");
+
+            entity.HasOne(d => d.Sender).WithMany(p => p.NotificationSenders)
+                .HasForeignKey(d => d.SenderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_sender");
         });
 
         modelBuilder.Entity<Player>(entity =>
@@ -284,22 +282,6 @@ public partial class ApplicationDbContext : DbContext
             entity.HasOne(d => d.Tournament).WithMany(p => p.TeamsTournaments)
                 .HasForeignKey(d => d.TournamentId)
                 .HasConstraintName("fk24s810yw359703h577ys1iiw4");
-        });
-
-        modelBuilder.Entity<TestEntity>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("test_entity_pkey");
-
-            entity.ToTable("test_entity");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.IsDeveloper).HasColumnName("is_developer");
-            entity.Property(e => e.Lastname)
-                .HasMaxLength(255)
-                .HasColumnName("lastname");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .HasColumnName("name");
         });
 
         modelBuilder.Entity<Tournament>(entity =>

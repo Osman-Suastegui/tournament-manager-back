@@ -21,6 +21,10 @@ public partial class Usuario
 
     public virtual ICollection<MatchesPlayer> MatchesPlayers { get; set; } = new List<MatchesPlayer>();
 
+    public virtual ICollection<Notification> NotificationReceivers { get; set; } = new List<Notification>();
+
+    public virtual ICollection<Notification> NotificationSenders { get; set; } = new List<Notification>();
+
     public virtual Player? Player { get; set; }
 
     public virtual ICollection<TeamPlayer> TeamPlayers { get; set; } = new List<TeamPlayer>();
