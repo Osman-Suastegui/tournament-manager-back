@@ -64,5 +64,22 @@ namespace tournament_manager.Services
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<Tournament>> getTournaments(string? search,int limit, int skip)
+        {
+            IQueryable<Tournament> tournamentsQuery = _context.Tournaments;
+
+            if (!string.IsNullOrWhiteSpace(search)) 
+            {
+
+               tournamentsQuery = tournamentsQuery.Where(tournament => EF.Functions.ILike(tournament.Name, $"%{search}%"));
+            }
+
+            return await tournamentsQuery
+                .Skip(skip)
+                .Take(limit)
+                .ToListAsync();
+
+        }
     }
 }

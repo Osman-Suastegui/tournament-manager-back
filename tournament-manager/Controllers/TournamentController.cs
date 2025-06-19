@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using tournament_manager.DTOS.Tournament;
+using tournament_manager.Models;
 using tournament_manager.Services;
 
 namespace tournament_manager.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TournamentController:ControllerBase
+    public class TournamentController : ControllerBase
     {
         private readonly JwtService _jwtService;
         private readonly TournamentService _tournamentService;
@@ -18,7 +19,7 @@ namespace tournament_manager.Controllers
         }
 
         [HttpPost]
-        public async Task <IActionResult> CreateTournament([FromBody] CreateTournamentDTO tournamentDto)
+        public async Task<IActionResult> CreateTournament([FromBody] CreateTournamentDTO tournamentDto)
         {
             Console.WriteLine("test2");
             var authorizationHeader = Request.Headers["Authorization"].ToString();
@@ -35,8 +36,15 @@ namespace tournament_manager.Controllers
                 return Unauthorized("Invalid token");
             }
 
-            await _tournamentService.createTournament(tournamentDto,userId);
+            await _tournamentService.createTournament(tournamentDto, userId);
             return Ok("Tournament created");
         }
+
+        [HttpGet]
+        public async Task<List<Tournament>> GetTournaments([FromQuery] string? search,[FromQuery] int limit,[FromQuery] int skip)
+        {
+            return await _tournamentService.getTournaments(search, limit, skip);
+        }
+
     }
 }
