@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using tournament_manager.DTOS.Tournament;
 using tournament_manager.Models;
 using tournament_manager.Services;
@@ -19,32 +21,36 @@ namespace tournament_manager.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateTournament([FromBody] CreateTournamentDTO tournamentDto)
         {
-            Console.WriteLine("test2");
-            var authorizationHeader = Request.Headers["Authorization"].ToString();
-            if (string.IsNullOrEmpty(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
-            {
-                return Unauthorized("No token provided");
-            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Console.WriteLine("User ID: " + userId);
 
-            var token = authorizationHeader.Substring("Bearer ".Length).Trim();
-            var userId = _jwtService.ExtractUserId(token);
-
-            if (userId == null)
-            {
-                return Unauthorized("Invalid token");
-            }
-
-            await _tournamentService.createTournament(tournamentDto, userId);
-            return Ok("Tournament created");
+            TournamentDTO response = await _tournamentService.createTournament(tournamentDto, userId);
+            return CreatedAtAction(
+                nameof(GetTournamentById),      // action that retrieves a single tournament
+                new { id = response.Id },     // route values so the client can call it
+                response);
         }
 
         [HttpGet]
-        public async Task<List<Tournament>> GetTournaments([FromQuery] string? search,[FromQuery] int limit,[FromQuery] int skip)
+        public async Task<List<Tournament>> GetTournaments([FromQuery] string? q,[FromQuery] int limit,[FromQuery] int skip,[FromQuery] string? status)
         {
-            return await _tournamentService.getTournaments(search, limit, skip);
+            return await _tournamentService.getTournaments(q, limit, skip,status);
         }
 
+        [HttpGet("getTournamentById")]
+        public async Task<Tournament> GetTournamentById([FromQuery] long id)
+        {
+
+            return await _tournamentService.GetTournamentById(id);
+        }
+
+        [HttpPut("editTournament")]
+        public async Task<EditTournamentDTO> EditTournament([FromBody] EditTournamentDTO tournamentDto)
+        {
+            return await _tournamentService.EditTournament(tournamentDto);
+        }
     }
 }

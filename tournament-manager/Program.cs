@@ -8,6 +8,8 @@ using tournament_manager.Models;
 using tournament_manager.Repositories.Interfaces;
 using tournament_manager.Repositories;
 using Microsoft.OpenApi.Models;
+using tournament_manager.Models;
+using System.Text.Json.Serialization;
 
 //using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -20,8 +22,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // ?? Ensure `DbContext` is registered
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<TournamentDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("UrlDatabase")));
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Secret"] ?? "DefaultSuperSecretKeyWith32Characters");

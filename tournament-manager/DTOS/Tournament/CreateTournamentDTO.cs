@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace tournament_manager.DTOS.Tournament
 {
@@ -11,6 +12,7 @@ namespace tournament_manager.DTOS.Tournament
     {
         public string Name { get; set; } = string.Empty;
         public string Sport { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public TournamentType TournamentType { get; set; }  // Changed to use the enum
         public List<string> Admins { get; set; }
         public string Description { get; set; }
@@ -26,7 +28,7 @@ namespace tournament_manager.DTOS.Tournament
         public string Id { get; set; }
         [Required(ErrorMessage = "Team name is required.")]
         public string Name { get; set; } = string.Empty;
-        public string LeaderEmail { get; set; }
+        public string LeaderEmail { get; set; } 
     }
 
 }

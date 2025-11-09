@@ -9,11 +9,11 @@ namespace tournament_manager.Services
     public class UserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly ApplicationDbContext _context;
+        private readonly TournamentDbContext _context;
 
         private readonly JwtService _jwtService;
 
-        public UserService(IUserRepository userRepository, ApplicationDbContext context, JwtService jwtService)
+        public UserService(IUserRepository userRepository, TournamentDbContext context, JwtService jwtService)
         {
             _userRepository = userRepository;
             _context = context;

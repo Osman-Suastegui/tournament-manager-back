@@ -5,9 +5,9 @@ namespace tournament_manager.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly TournamentDbContext _context;
 
-        public UserRepository(ApplicationDbContext context)
+        public UserRepository(TournamentDbContext context)
         {
             _context = context;
         }

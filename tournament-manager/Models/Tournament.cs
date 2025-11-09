@@ -9,7 +9,7 @@ public partial class Tournament
 
     public int? CantidadEquipos { get; set; }
 
-    public DateOnly? EndDate { get; set; }
+    public DateTime? EndDate { get; set; }
 
     public string? Estado { get; set; }
 
@@ -17,7 +17,7 @@ public partial class Tournament
 
     public string? Sport { get; set; }
 
-    public DateOnly? StartDate { get; set; }
+    public DateTime? StartDate { get; set; }
 
     public int? CantidadEnfrentamientosRegular { get; set; }
 
